@@ -6,7 +6,7 @@ MySQL
 ## フロント
 React、MUI、Vite、TypeScript、Biome
 
-※今後やる
+# おいおいやること
 ## CI/CD
 GitHub Actions
 ## テスト
