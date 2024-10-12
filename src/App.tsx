@@ -6,16 +6,13 @@ import '@fontsource/zen-kaku-gothic-new/300.css'
 import '@fontsource/zen-kaku-gothic-new/400.css'
 import '@fontsource/zen-kaku-gothic-new/500.css'
 import '@fontsource/zen-kaku-gothic-new/700.css'
-import Button from '@mui/material/Button'
+import router from '@/routes/routes'
+import { RouterProvider } from 'react-router-dom'
 
 function App() {
   return (
     <div>
-      <p>home</p>
-      <Button>Hello world</Button>
-      <a href="" className="block">
-        Listへ
-      </a>
+      <RouterProvider router={router} />
     </div>
   )
 }
