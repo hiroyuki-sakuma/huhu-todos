@@ -2,16 +2,24 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 
 export default function TodoList() {
-  const [data, setData] = useState([{ id: 0, title: 'sample title' }])
+  const [data, setData] = useState([{ id: null, title: null }])
 
   useEffect(() => {
-    const testResult = async () => {
-      const response = await fetch('http://localhost:5000/index.php')
-      const result = await response.json()
-      setData(result)
+    const fetchTestData = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/index.php')
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`)
+        }
+        const result = await response.json()
+        setData(result.data)
+      } catch (e) {
+        console.log(e)
+        alert('データの取得中にエラーが発生しました。')
+      }
     }
 
-    testResult()
+    fetchTestData()
   }, [])
 
   return (
