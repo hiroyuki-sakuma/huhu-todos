@@ -5,12 +5,9 @@ function connect_db()
     $db = 'app_db';
     $charset = 'utf8';
     $dsn = "mysql:host=$host; dbname=$db; charset=$charset";
-
-    //ユーザー名、パスワード
     $user = 'test';
     $pass = 'test';
 
-    //オプション
     $options = [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
@@ -23,20 +20,21 @@ function connect_db()
         echo $e->getMessage();
     }
 
-    //PDOインスタンスを返す
     return $pdo;
 }
 
-//データベースと接続して、PDOインスタンスを取得
 $pdo = connect_db();
 
-//実行したいSQLを準備する
 $sql = 'select * from test_table';
 $stmt = $pdo->prepare($sql);
-
-//SQLを実行
 $stmt->execute();
 
-//データベースの値を取得
-$result = $stmt->fetchall();
-var_dump($result);
+$result = json_encode($stmt->fetchAll());
+
+header('Content-Type: application/json');
+header('Access-Control-Allow-Origin: http://localhost:5173');
+header('Access-Control-Max-Age: 3600');
+header('Access-Control-Allow-Methods: GET, OPTIONS');
+header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+
+echo $result;
