@@ -5,6 +5,8 @@ PHP、Apache
 MySQL
 ## フロント
 React、MUI、Vite、TypeScript、Biome
+## インフラ
+GCP？
 <br><br>
 ***
 # おいおいやること
@@ -12,5 +14,3 @@ React、MUI、Vite、TypeScript、Biome
 GitHub Actions
 ## テスト
 Jest、PHPUnit
-## インフラ
-herokuかGCP？
