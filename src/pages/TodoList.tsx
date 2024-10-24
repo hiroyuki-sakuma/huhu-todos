@@ -7,15 +7,14 @@ export default function TodoList() {
   useEffect(() => {
     const fetchTestData = async () => {
       try {
-        const response = await fetch('http://localhost:5000/index.php')
+        const response = await fetch(import.meta.env.VITE_ENDPOINT)
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`)
         }
         const result = await response.json()
-        setData(result.data)
+        setData(result)
       } catch (e) {
         console.log(e)
-        alert('データの取得中にエラーが発生しました。')
       }
     }
 
@@ -29,6 +28,8 @@ export default function TodoList() {
       <Link to="/detail" className="block">
         todo detail
       </Link>
+      {data[0].id}
+      <br />
       {data[0].title}
     </div>
   )

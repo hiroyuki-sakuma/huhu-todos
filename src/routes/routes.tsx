@@ -1,5 +1,5 @@
+import Admin from '@/pages/Admin'
 import TodoList from '@/pages/TodoList'
-import TodoDetail from '@/pages/TodoDetail'
 import { createBrowserRouter } from 'react-router-dom'
 
 const router = createBrowserRouter([
@@ -8,8 +8,8 @@ const router = createBrowserRouter([
     element: <TodoList />,
   },
   {
-    path: '/detail',
-    element: <TodoDetail />,
+    path: '/admin',
+    element: <Admin />,
   },
 ])
 

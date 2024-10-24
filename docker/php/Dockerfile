@@ -2,9 +2,8 @@ FROM php:8.0-apache
 
 COPY ./php.ini /usr/local/etc/php/
 
-RUN apt-get update -y && \
-    apt-get upgrade -y && \
-    apt-get -y install \
+RUN apt-get update && \
+    apt-get install -y \
     libicu-dev \
     libzip-dev \
     libonig-dev \
@@ -20,3 +19,5 @@ WORKDIR /var/www/html
 EXPOSE 80
 
 RUN a2enmod rewrite
+
+RUN sed -i 's/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
