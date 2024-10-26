@@ -1,11 +1,10 @@
 <?php
-require_once 'vendor/autoload.php';
 
-use Backend\Http\HttpResponse;
+require_once __DIR__ . '/vendor/autoload.php';
 
-$method = $_SERVER['REQUEST_METHOD'];
-$path = $_SERVER['REQUEST_URI'];
-$router = require 'routes/routes.php';
+use Backend\Routes\Router;
+use Backend\Http\HttpRequest;
 
-$result = $router->handle_request($method, $path);
-echo HttpResponse::send_json_response($result, 200);
+$request = new HttpRequest();
+$router = new Router();
+$router->handle($request);

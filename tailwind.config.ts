@@ -14,6 +14,7 @@ const config: Config = {
       colors: {
         black: '#252525',
         white: '#FFFFFF',
+        danger: 'red'
       },
     },
   },

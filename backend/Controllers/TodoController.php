@@ -7,30 +7,25 @@ use PDO;
 
 class TodoController
 {
-    private $todoModel;
+    private $todo_model;
 
     public function __construct(PDO $pdo)
     {
-        $this->todoModel = new TodoModel($pdo);
+        $this->todo_model = new TodoModel($pdo);
     }
 
-    public function get_test_all()
+    public function index()
     {
-        try {
-            $todos = $this->todoModel->find_all();
-            return $todos;
-        } catch (\Exception $e) {
-            return ['status' => 'error', 'message' => $e->getMessage()];
-        }
+        return $this->todo_model->find_all();
     }
 
-    public function get_by_id($id)
+    public function store(array $data)
     {
-        try {
-            $todo = $this->todoModel->find_by_id($id);
-            return ['status' => 'success', 'data' => $todo];
-        } catch (\Exception $e) {
-            return ['status' => 'error', 'message' => $e->getMessage()];
-        }
+        $this->todo_model->save_db($data);
+    }
+
+    public function get_by_id(int $id)
+    {
+        return $this->todo_model->find_by_id($id);
     }
 }

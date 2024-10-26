@@ -2,45 +2,44 @@
 
 namespace Backend\Routes;
 
+use Backend\Http\HttpRequest;
+use Backend\Http\HttpResponse;
+use Backend\Database;
+
 class Router
 {
-  private $routes = [];
+  private array $routes;
 
-  public function get($path, $handler)
+  public function __construct()
   {
-    $this->routes['GET'][$path] = $handler;
+    $this->routes = require 'Routes.php';
   }
 
-  public function post($path, $handler)
+  public function handle(HttpRequest $request)
   {
-    $this->routes['POST'][$path] = $handler;
-  }
+    $method = $request->get_method();
+    $path = $request->get_path();
 
-  public function put($path, $handler)
-  {
-    $this->routes['PUT'][$path] = $handler;
-  }
-
-  public function delete($path, $handler)
-  {
-    $this->routes['DELETE'][$path] = $handler;
-  }
-
-  public function handle_request($method, $path)
-  {
-    $url_parts = parse_url($path);
-    $path = ($url_parts['path']);
-
-    if (isset($this->routes[$method][$path])) {
-      $handler = $this->routes[$method][$path];
-      $params = [];
-      if (isset($url_parts['query'])) {
-        parse_str($url_parts['query'], $params);
-      }
-      return $handler($params);
+    if ($method === 'OPTIONS') {
+      HttpResponse::send_json_response(null);
     }
 
-    http_response_code(404);
-    return ['status' => 'error', 'message' => 'Not Found'];
+    if (!isset($this->routes[$method][$path])) {
+      HttpResponse::send_json_response(['error' => 'Not Found'], 404);
+    }
+
+    [$controller_class, $method_name] = $this->routes[$method][$path];
+
+    $pdo = Database::connect_db();
+    $controller = new $controller_class($pdo);
+
+    if ($method === 'POST') {
+      $body = $request->parse_body();
+      $result = $controller->$method_name($body);
+    } else {
+      $result = $controller->$method_name();
+    }
+
+    HttpResponse::send_json_response($result);
   }
 }

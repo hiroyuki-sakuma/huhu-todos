@@ -2,31 +2,52 @@
 
 namespace Backend\Models;
 
+use Exception;
 use PDO;
 
 class TodoModel
 {
-    private $pdo;
+    private PDO $pdo;
 
-    public function __construct($pdo)
+    public function __construct(PDO $pdo)
     {
         $this->pdo = $pdo;
     }
 
     public function find_all()
     {
-        $sql = 'SELECT * from test_table';
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute();
-        return $stmt->fetchAll();
+        try {
+            $sql = 'SELECT * FROM test_table ORDER BY created_at DESC';
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute();
+            return $stmt->fetchAll();
+        } catch (Exception $e) {
+            throw new Exception('タスクの取得に失敗しました: ' . $e->getMessage());
+        }
     }
 
-    public function find_by_id($id)
+    public function find_by_id(int $id)
     {
-        $sql = 'SELECT * from test_table WHERE id = :id';
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
-        $stmt->execute();
-        return $stmt->fetch();
+        try {
+            $sql = 'SELECT * FROM test_table WHERE id = :id';
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetch();
+        } catch (Exception $e) {
+            throw new Exception('タスクの取得に失敗しました: ' . $e->getMessage());
+        }
+    }
+
+    public function save_db(array $data)
+    {
+        try {
+            $sql = 'INSERT INTO test_table (todo) VALUES (:todo)';
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindValue(':todo', $data['todo'], PDO::PARAM_STR);
+            $stmt->execute();
+        } catch (Exception $e) {
+            throw new Exception('タスクの保存に失敗しました: ' . $e->getMessage());
+        }
     }
 }
