@@ -16,6 +16,7 @@ type Todo = {
   id: number
   todo: string
   created_at: string
+  completed: boolean
 }
 
 export default function TodoList() {
@@ -28,7 +29,10 @@ export default function TodoList() {
         throw new Error(`HTTP error! status: ${response.status}`)
       }
       const result = await response.json()
-      setTodos(result)
+      const uncompletedTodos = result.filter((item: Todo) => {
+        return !item.completed
+      })
+      setTodos(uncompletedTodos)
     } catch (e) {
       console.log(e)
     }
@@ -67,12 +71,35 @@ export default function TodoList() {
 
   const handleOnBlur = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const id = Number(event.target.dataset.id)
-    const newValue = event.target.value
+    const newTodo = event.target.value
 
     try {
       await axios.put(`${import.meta.env.VITE_ENDPOINT}/${id}`, {
-        todo: newValue,
+        todo: newTodo,
+        completed: true,
       })
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  const handleComplete = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const id = Number(event.target.dataset.id)
+    const todo = todos.find((item) => {
+      return item.id === id
+    })
+
+    if (!todo) return
+
+    try {
+      await axios.put(`${import.meta.env.VITE_ENDPOINT}/${id}`, {
+        todo: todo.todo,
+        completed: true,
+      })
+
+      setTimeout(() => {
+        fetchTodos()
+      }, 1000)
     } catch (e) {
       console.log(e)
     }
@@ -82,7 +109,6 @@ export default function TodoList() {
     fetchTodos()
   }, [fetchTodos])
 
-  console.log(todos)
   return (
     <div className="container">
       <div className="mb-5 pt-5">
@@ -106,8 +132,20 @@ export default function TodoList() {
         </form>
       </div>
       {todos?.map((todo) => (
-        <div key={todo.id} className="flex gap-2 border-b-2 border-gray py-2 pr-2">
-          <Checkbox size="small" data-id={todo.id} />
+        <div
+          key={todo.id}
+          className="flex gap-2 border-b-2 border-gray py-2 pr-2"
+        >
+          <Checkbox
+            size="small"
+            inputProps={
+              {
+                'data-id': `${todo.id}`,
+                // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+              } as any
+            }
+            onChange={handleComplete}
+          />
           <input
             type="text"
             value={todo.todo}

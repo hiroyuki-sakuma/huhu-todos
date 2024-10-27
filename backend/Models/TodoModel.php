@@ -54,10 +54,11 @@ class TodoModel
     public function update(array $data, int $id)
     {
         try {
-            $sql = 'UPDATE test_table SET todo = :todo WHERE id = :id';
+            $sql = 'UPDATE test_table SET todo = :todo, completed = :completed WHERE id = :id';
             $stmt = $this->pdo->prepare($sql);
             $stmt->bindValue(':id', $id, PDO::PARAM_INT);
             $stmt->bindValue(':todo', $data['todo'], PDO::PARAM_STR);
+            $stmt->bindValue(':completed', $data['completed'], PDO::PARAM_BOOL);
             $stmt->execute();
         } catch (Exception $e) {
             throw new Exception('タスクの上書きに失敗しました: ' . $e->getMessage());
