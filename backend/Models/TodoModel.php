@@ -2,6 +2,7 @@
 
 namespace Backend\Models;
 
+use Error;
 use Exception;
 use PDO;
 
@@ -62,6 +63,18 @@ class TodoModel
             $stmt->execute();
         } catch (Exception $e) {
             throw new Exception('タスクの上書きに失敗しました: ' . $e->getMessage());
+        }
+    }
+
+    public function delete(int $id)
+    {
+        try {
+            $sql = 'DELETE FROM test_table WHERE id = :id';
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+            $stmt->execute();
+        } catch (Exception $e) {
+            throw new Error('タスクの削除に失敗しました: ' . $e->getMessage());
         }
     }
 }

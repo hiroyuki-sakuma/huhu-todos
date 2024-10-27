@@ -73,13 +73,22 @@ export default function TodoList() {
     const id = Number(event.target.dataset.id)
     const newTodo = event.target.value
 
-    try {
-      await axios.put(`${import.meta.env.VITE_ENDPOINT}/${id}`, {
-        todo: newTodo,
-        completed: true,
-      })
-    } catch (e) {
-      console.log(e)
+    if (!newTodo) {
+      try {
+        await axios.delete(`${import.meta.env.VITE_ENDPOINT}/${id}`)
+        fetchTodos()
+      } catch (e) {
+        console.log(e)
+      }
+    } else {
+      try {
+        await axios.put(`${import.meta.env.VITE_ENDPOINT}/${id}`, {
+          todo: newTodo,
+          completed: true,
+        })
+      } catch (e) {
+        console.log(e)
+      }
     }
   }
 

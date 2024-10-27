@@ -33,4 +33,9 @@ class TodoController
     {
         $this->todo_model->update($data, $id);
     }
+
+    public function delete(int $id)
+    {
+        $this->todo_model->delete($id);
+    }
 }

@@ -14,5 +14,8 @@ return [
     ],
     'PUT' => [
         '/{id}' => [TodoController::class, 'update']
+    ],
+    'DELETE' => [
+        '/{id}' => [TodoController::class, 'delete']
     ]
 ];

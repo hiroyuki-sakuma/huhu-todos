@@ -17,13 +17,13 @@ class HttpRequest
         header('Content-Type: application/json; charset=utf-8');
         header("Access-Control-Allow-Origin: " . $_ENV['BASE_URL']);
         header('Access-Control-Max-Age: 3600');
-        header('Access-Control-Allow-Methods: GET, POST, PUT, OPTIONS');
+        header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
         header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
     }
 
     public function parse_body()
     {
-        if ($this->method === 'POST' || $this->method === 'PUT') {
+        if ($this->method === 'POST' || $this->method === 'PUT' || $this->method === 'DELETE') {
             $json = file_get_contents('php://input');
             $data = json_decode($json, true);
             return $data ?? [];
