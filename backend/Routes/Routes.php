@@ -11,5 +11,8 @@ return [
     ],
     'POST' => [
         '/' => [TodoController::class, 'store']
+    ],
+    'PUT' => [
+        '/{id}' => [TodoController::class, 'update']
     ]
 ];

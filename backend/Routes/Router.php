@@ -24,16 +24,23 @@ class Router
       HttpResponse::send_json_response(null);
     }
 
+    if ($method === 'PUT' && preg_match('/\/(\d+)$/', $path, $matches)) {
+      $id = $matches[1];
+      $path = '/{id}';
+    }
+
     if (!isset($this->routes[$method][$path])) {
       HttpResponse::send_json_response(['error' => 'Not Found'], 404);
     }
 
     [$controller_class, $method_name] = $this->routes[$method][$path];
-
     $pdo = Database::connect_db();
     $controller = new $controller_class($pdo);
 
-    if ($method === 'POST') {
+    if ($method === 'PUT') {
+      $body = $request->parse_body();
+      $result = $controller->$method_name($body, $id);
+    } elseif ($method === 'POST') {
       $body = $request->parse_body();
       $result = $controller->$method_name($body);
     } else {

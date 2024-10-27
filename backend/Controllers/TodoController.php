@@ -28,4 +28,9 @@ class TodoController
     {
         return $this->todo_model->find_by_id($id);
     }
+
+    public function update(array $data, int $id)
+    {
+        $this->todo_model->update($data, $id);
+    }
 }

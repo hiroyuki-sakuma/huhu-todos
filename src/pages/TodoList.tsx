@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Button, OutlinedInput } from '@mui/material'
+import { Button, Checkbox, OutlinedInput } from '@mui/material'
 import axios from 'axios'
 import { useCallback, useEffect, useState } from 'react'
 import type { SubmitHandler } from 'react-hook-form'
@@ -19,16 +19,16 @@ type Todo = {
 }
 
 export default function TodoList() {
-  const [data, setData] = useState<Todo[]>([])
+  const [todos, setTodos] = useState<Todo[]>([])
 
-  const fetchTestData = useCallback(async () => {
+  const fetchTodos = useCallback(async () => {
     try {
       const response = await fetch(import.meta.env.VITE_ENDPOINT)
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)
       }
       const result = await response.json()
-      setData(result)
+      setTodos(result)
     } catch (e) {
       console.log(e)
     }
@@ -44,33 +44,53 @@ export default function TodoList() {
 
   const onSubmit: SubmitHandler<FormData> = async (data) => {
     try {
-      await axios.post(
-        import.meta.env.VITE_ENDPOINT,
-        { todo: data.todo },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        },
+      await axios.post(import.meta.env.VITE_ENDPOINT, { todo: data.todo })
+      fetchTodos()
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  const handleChangeTodo = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const id = Number(event.target.dataset.id)
+      const newValue = event.target.value
+
+      setTodos((prev) =>
+        prev.map((todo) =>
+          todo.id === id ? { ...todo, todo: newValue } : todo,
+        ),
       )
-      fetchTestData()
+    },
+    [],
+  )
+
+  const handleOnBlur = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const id = Number(event.target.dataset.id)
+    const newValue = event.target.value
+
+    try {
+      await axios.put(`${import.meta.env.VITE_ENDPOINT}/${id}`, {
+        todo: newValue,
+      })
     } catch (e) {
       console.log(e)
     }
   }
 
   useEffect(() => {
-    fetchTestData()
-  }, [fetchTestData])
+    fetchTodos()
+  }, [fetchTodos])
 
+  console.log(todos)
   return (
     <div className="container">
       <div className="mb-5 pt-5">
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="flex gap-x-5">
+        <form onSubmit={handleSubmit(onSubmit)} className="relative mb-8">
+          <div className="flex gap-x-5 justify-between">
             <OutlinedInput
               type="text"
-              className="h-9"
+              className="h-9 w-full"
               placeholder="新規タスク"
               {...register('todo')}
             />
@@ -79,17 +99,23 @@ export default function TodoList() {
             </Button>
           </div>
           {errors.todo?.message && (
-            <span className="text-danger">{errors.todo?.message}</span>
+            <span className="text-danger absolute bottom-[-70%] block">
+              {errors.todo?.message}
+            </span>
           )}
         </form>
       </div>
-      {/* <Link to="/detail" className="block">
-        detail{' '}
-      </Link> */}
-      {data?.map((item) => (
-        <div key={item.id}>
-          <div>{item.todo}</div>
-          <time dateTime={item.created_at}>{item.created_at}</time>
+      {todos?.map((todo) => (
+        <div key={todo.id} className="flex gap-2 border-b-2 border-gray py-2 pr-2">
+          <Checkbox size="small" data-id={todo.id} />
+          <input
+            type="text"
+            value={todo.todo}
+            onChange={handleChangeTodo}
+            onBlur={handleOnBlur}
+            data-id={todo.id}
+            className="w-full"
+          />
         </div>
       ))}
     </div>
