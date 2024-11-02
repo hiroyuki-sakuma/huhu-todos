@@ -16,6 +16,7 @@ const config: Config = {
         white: '#FFF',
         danger: 'red',
         gray: '#EEE',
+        blue: 'blue',
       },
     },
   },

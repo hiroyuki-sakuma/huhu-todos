@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Button, Checkbox, OutlinedInput } from '@mui/material'
 import axios from 'axios'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { SubmitHandler } from 'react-hook-form'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -14,13 +14,15 @@ type FormData = z.infer<typeof schema>
 
 type Todo = {
   id: number
+  category_id: number
   todo: string
-  created_at: string
   completed: boolean
+  created_at: string
 }
 
 export default function TodoList() {
   const [todos, setTodos] = useState<Todo[]>([])
+  const [categoryId, setCategoryId] = useState<number>(0)
 
   const fetchTodos = useCallback(async () => {
     try {
@@ -84,7 +86,8 @@ export default function TodoList() {
       try {
         await axios.put(`${import.meta.env.VITE_ENDPOINT}/${id}`, {
           todo: newTodo,
-          completed: true,
+          completed: false,
+          completed_at: null,
         })
       } catch (e) {
         console.log(e)
@@ -99,11 +102,13 @@ export default function TodoList() {
     })
 
     if (!todo) return
+    console.log(todos)
 
     try {
       await axios.put(`${import.meta.env.VITE_ENDPOINT}/${id}`, {
         todo: todo.todo,
         completed: true,
+        completed_at: new Date(),
       })
 
       setTimeout(() => {
@@ -113,6 +118,21 @@ export default function TodoList() {
       console.log(e)
     }
   }
+
+  const filteredTodos = useMemo(() => {
+    if (categoryId === 0) return todos
+    return todos.filter((todo) => todo.category_id === categoryId)
+  }, [todos, categoryId])
+
+  const handleCategoryChange = useCallback(
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      const newCategoryId = event.currentTarget.dataset.categoryId
+        ? Number(event.currentTarget.dataset.categoryId)
+        : 0
+      setCategoryId(newCategoryId)
+    },
+    [],
+  )
 
   useEffect(() => {
     fetchTodos()
@@ -140,7 +160,52 @@ export default function TodoList() {
           )}
         </form>
       </div>
-      {todos?.map((todo) => (
+      <div>
+        <ul className="flex gap-5">
+          <li>
+            <button
+              type="button"
+              className={
+                categoryId === 0
+                  ? 'text-blue border-b border-blue border-solid pb-1'
+                  : ''
+              }
+              onClick={handleCategoryChange}
+            >
+              全て
+            </button>
+          </li>
+          <li>
+            <button
+              type="button"
+              className={
+                categoryId === 1
+                  ? 'text-blue border-b border-blue border-solid pb-1'
+                  : ''
+              }
+              onClick={handleCategoryChange}
+              data-category-id={1}
+            >
+              家事
+            </button>
+          </li>
+          <li>
+            <button
+              type="button"
+              className={
+                categoryId === 2
+                  ? 'text-blue border-b border-blue border-solid pb-1'
+                  : ''
+              }
+              onClick={handleCategoryChange}
+              data-category-id={2}
+            >
+              手続き
+            </button>
+          </li>
+        </ul>
+      </div>
+      {filteredTodos?.map((todo: Todo) => (
         <div
           key={todo.id}
           className="flex gap-2 border-b-2 border-gray py-2 pr-2"
