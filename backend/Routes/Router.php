@@ -24,8 +24,8 @@ class Router
       HttpResponse::send_json_response(null);
     }
 
-    if ($method === 'PUT' || $method === 'DELETE' && preg_match('/\/(\d+)$/', $path, $matches)) {
-      $id = $matches[1];
+    if (($method === 'PUT' || $method === 'DELETE' || $method === 'GET') && preg_match('/\/(\d+)$/', $path, $matches)) {
+      $id = (int)$matches[1];
       $path = '/{id}';
     }
 
@@ -39,11 +39,14 @@ class Router
 
     if ($method === 'PUT') {
       $body = $request->parse_body();
+      var_dump($body);
       $result = $controller->$method_name($body, $id);
     } elseif ($method === 'POST') {
       $body = $request->parse_body();
       $result = $controller->$method_name($body);
     } elseif ($method === 'DELETE') {
+      $result = $controller->$method_name($id);
+    } elseif ($method === 'GET' && $path !== '/') {
       $result = $controller->$method_name($id);
     } else {
       $result = $controller->$method_name();

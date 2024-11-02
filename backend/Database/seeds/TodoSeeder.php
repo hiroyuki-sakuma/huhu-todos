@@ -24,7 +24,7 @@ class TodoSeeder extends Seeder
 
             $stmt->execute([
                 $faker->numberBetween(1, 3),
-                $faker->sentence(2, false),
+                $faker->realText(10, 5),
                 $completed,
                 $faker->numberBetween(1, 2),
                 $completed_by,

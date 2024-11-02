@@ -7,7 +7,7 @@ use Backend\Controllers\TodoController;
 return [
     'GET' => [
         '/' => [TodoController::class, 'index'],
-        // TODO詳細を実装
+        '/{id}' => [TodoController::class, 'get_by_id'],
     ],
     'POST' => [
         '/' => [TodoController::class, 'store']

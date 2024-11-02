@@ -5,6 +5,7 @@ namespace Backend\Models;
 use Error;
 use Exception;
 use PDO;
+use DateTime;
 
 class TodoModel
 {
@@ -18,7 +19,7 @@ class TodoModel
     public function find_all()
     {
         try {
-            $sql = 'SELECT * FROM test_table ORDER BY created_at DESC';
+            $sql = 'SELECT * FROM todos ORDER BY created_at DESC';
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute();
             return $stmt->fetchAll();
@@ -30,7 +31,7 @@ class TodoModel
     public function find_by_id(int $id)
     {
         try {
-            $sql = 'SELECT * FROM test_table WHERE id = :id';
+            $sql = 'SELECT * FROM todos WHERE id = :id';
             $stmt = $this->pdo->prepare($sql);
             $stmt->bindValue(':id', $id, PDO::PARAM_INT);
             $stmt->execute();
@@ -43,9 +44,11 @@ class TodoModel
     public function save_db(array $data)
     {
         try {
-            $sql = 'INSERT INTO test_table (todo) VALUES (:todo)';
+            $sql = 'INSERT INTO todos (category_id, todo, created_by) VALUES (:category_id, :todo, :created_by)';
             $stmt = $this->pdo->prepare($sql);
+            $stmt->bindValue(':category_id', 1, PDO::PARAM_INT);
             $stmt->bindValue(':todo', $data['todo'], PDO::PARAM_STR);
+            $stmt->bindValue(':created_by', 1, PDO::PARAM_INT);
             $stmt->execute();
         } catch (Exception $e) {
             throw new Exception('タスクの保存に失敗しました: ' . $e->getMessage());
@@ -55,11 +58,17 @@ class TodoModel
     public function update(array $data, int $id)
     {
         try {
-            $sql = 'UPDATE test_table SET todo = :todo, completed = :completed WHERE id = :id';
+            $sql = 'UPDATE todos SET todo = :todo, completed = :completed, completed_at = :completed_at WHERE id = :id';
             $stmt = $this->pdo->prepare($sql);
             $stmt->bindValue(':id', $id, PDO::PARAM_INT);
             $stmt->bindValue(':todo', $data['todo'], PDO::PARAM_STR);
             $stmt->bindValue(':completed', $data['completed'], PDO::PARAM_BOOL);
+            if ($data['completed_at']) {
+                $date = new DateTime($data['completed_at']);
+                var_dump($date);
+                $completed_at = $date->format('Y-m-d');
+            }
+            $stmt->bindValue(':completed_at', $completed_at, $completed_at ? PDO::PARAM_STR : PDO::PARAM_NULL);
             $stmt->execute();
         } catch (Exception $e) {
             throw new Exception('タスクの上書きに失敗しました: ' . $e->getMessage());
@@ -69,7 +78,7 @@ class TodoModel
     public function delete(int $id)
     {
         try {
-            $sql = 'DELETE FROM test_table WHERE id = :id';
+            $sql = 'DELETE FROM todos WHERE id = :id';
             $stmt = $this->pdo->prepare($sql);
             $stmt->bindValue(':id', $id, PDO::PARAM_INT);
             $stmt->execute();

@@ -23,8 +23,9 @@ class HttpRequest
 
     public function parse_body()
     {
-        if ($this->method === 'POST' || $this->method === 'PUT' || $this->method === 'DELETE') {
+        if ($this->method === 'POST' || $this->method === 'PUT') {
             $json = file_get_contents('php://input');
+            var_dump($json);
             $data = json_decode($json, true);
             return $data ?? [];
         }
