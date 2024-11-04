@@ -19,14 +19,14 @@ class TodoController
         return $this->todo_model->find_all();
     }
 
-    public function store(array $data)
-    {
-        $this->todo_model->save_db($data);
-    }
-
     public function get_by_id(int $id)
     {
         return $this->todo_model->find_by_id($id);
+    }
+
+    public function store(array $data)
+    {
+        $this->todo_model->save_db($data);
     }
 
     public function update(array $data, int $id)

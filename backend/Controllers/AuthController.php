@@ -3,6 +3,7 @@
 namespace Backend\Controllers;
 
 use Backend\Libs\Auth;
+use Backend\Libs\Helper;
 use Backend\Http\HttpResponse;
 use PDO;
 use Exception;
@@ -23,6 +24,7 @@ class AuthController
 
         try {
             if ($this->auth->login($email, $password)) {
+                Helper::generate_csrf_token();
                 $data = [
                     'status' => 'success',
                     'message' => 'ログインに成功しました'

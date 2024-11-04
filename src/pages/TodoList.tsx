@@ -1,7 +1,7 @@
 import { ButtonLogout } from '@/components/ButtonLogout'
+import { apiWithCSRF, apiWithoutCSRF } from '@/lib/axios'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Button, Checkbox, OutlinedInput } from '@mui/material'
-import axios from 'axios'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { SubmitHandler } from 'react-hook-form'
 import { useForm } from 'react-hook-form'
@@ -27,12 +27,9 @@ export default function TodoList() {
 
   const fetchTodos = useCallback(async () => {
     try {
-      const response = await fetch(import.meta.env.VITE_ENDPOINT)
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
-      }
-      const result = await response.json()
-      const uncompletedTodos = result.filter((item: Todo) => {
+      const response = await apiWithoutCSRF.get('/')
+      console.log(response)
+      const uncompletedTodos = response.data.filter((item: Todo) => {
         return !item.completed
       })
       setTodos(uncompletedTodos)
@@ -51,7 +48,7 @@ export default function TodoList() {
 
   const onSubmit: SubmitHandler<FormData> = async (data) => {
     try {
-      await axios.post(import.meta.env.VITE_ENDPOINT, { todo: data.todo })
+      await apiWithCSRF.post('/', { todo: data.todo })
       fetchTodos()
     } catch (e) {
       console.log(e)
@@ -78,14 +75,14 @@ export default function TodoList() {
 
     if (!newTodo) {
       try {
-        await axios.delete(`${import.meta.env.VITE_ENDPOINT}/${id}`)
+        await apiWithCSRF.delete(`/${id}`)
         fetchTodos()
       } catch (e) {
         console.log(e)
       }
     } else {
       try {
-        await axios.put(`${import.meta.env.VITE_ENDPOINT}/${id}`, {
+        await apiWithCSRF.put(`/${id}`, {
           todo: newTodo,
           completed: false,
           completed_at: null,
@@ -105,7 +102,7 @@ export default function TodoList() {
     if (!todo) return
 
     try {
-      await axios.put(`${import.meta.env.VITE_ENDPOINT}/${id}`, {
+      await apiWithCSRF.put(`/${id}`, {
         todo: todo.todo,
         completed: true,
         completed_at: new Date(),

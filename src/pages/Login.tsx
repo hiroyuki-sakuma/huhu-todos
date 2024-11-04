@@ -1,10 +1,10 @@
 import { useAuth } from '@/contexts/AuthContext'
+import { apiWithoutCSRF } from '@/lib/axios'
 import { Button, TextField } from '@mui/material'
-import axios from 'axios'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-interface LoginData {
+type LoginData = {
   email: string
   password: string
 }
@@ -31,12 +31,8 @@ export default function Login() {
     setError('')
 
     try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_ENDPOINT}/login`,
-        loginData,
-        { withCredentials: true },
-      )
-      // console.log(response)
+      const response = await apiWithoutCSRF.post('/login', loginData)
+      console.log(response.config)
 
       if (response.data.status === 'success') {
         await checkAuth()

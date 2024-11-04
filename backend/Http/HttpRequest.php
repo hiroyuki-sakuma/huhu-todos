@@ -2,6 +2,8 @@
 
 namespace Backend\Http;
 
+use Backend\Libs\Helper;
+
 require_once 'bootstrap.php';
 
 class HttpRequest
@@ -19,7 +21,16 @@ class HttpRequest
         header('Access-Control-Max-Age: 3600');
         header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
         header('Access-Control-Allow-Credentials: true');
-        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With, X-XSRF-TOKEN");
+
+        if (!$this->path === '/login' && in_array($this->method, ['POST', 'PUT', 'DELETE'])) {
+            if (!Helper::validate_csrf_token()) {
+                HttpResponse::send_json_response([
+                    'status' => 'error',
+                    'message' => 'CSRFトークン検証に失敗しました'
+                ], 403);
+            }
+        }
     }
 
     public function parse_body()
