@@ -1,9 +1,9 @@
+import { useAuth } from '@/contexts/AuthContext'
 import { Button } from '@mui/material'
 import axios from 'axios'
-import { useNavigate } from 'react-router-dom'
 
 export function ButtonLogout() {
-  const navigate = useNavigate()
+  const { logout } = useAuth()
 
   const handleLogout = async () => {
     try {
@@ -14,10 +14,9 @@ export function ButtonLogout() {
           withCredentials: true,
         },
       )
-      console.log(response)
 
       if (response.data.status === 'success') {
-        navigate('/login')
+        logout()
       }
     } catch (e) {
       console.log(e)

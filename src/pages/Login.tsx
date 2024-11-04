@@ -1,4 +1,4 @@
-// import { useAuth } from '@/contexts/AuthContext'
+import { useAuth } from '@/contexts/AuthContext'
 import { Button, TextField } from '@mui/material'
 import axios from 'axios'
 import { useState } from 'react'
@@ -16,7 +16,7 @@ export default function Login() {
   })
   const [error, setError] = useState<string>('')
   const navigate = useNavigate()
-  // const { checkAuth } = useAuth()
+  const { checkAuth } = useAuth()
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target
@@ -36,10 +36,10 @@ export default function Login() {
         loginData,
         { withCredentials: true },
       )
-      console.log(response)
+      // console.log(response)
 
       if (response.data.status === 'success') {
-        // await checkAuth()
+        await checkAuth()
         navigate('/')
       } else {
         setError(response.data.message || 'ログインに失敗しました')
