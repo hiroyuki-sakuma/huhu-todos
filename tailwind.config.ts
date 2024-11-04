@@ -11,6 +11,12 @@ const config: Config = {
         montserrat: ['Montserrat Variable', 'sans-serif'],
         zen: ['Zen Kaku Gothic New', 'sans-serif'],
       },
+      fontSize: {
+        sm: '8px',
+        md: '16px',
+        lg: '24px',
+        xl: '32px',
+      },
       colors: {
         black: '#252525',
         white: '#FFF',

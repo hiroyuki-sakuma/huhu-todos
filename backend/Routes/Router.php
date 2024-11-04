@@ -39,13 +39,14 @@ class Router
 
     if ($method === 'PUT') {
       $body = $request->parse_body();
-      var_dump($body);
       $result = $controller->$method_name($body, $id);
     } elseif ($method === 'POST') {
       $body = $request->parse_body();
       $result = $controller->$method_name($body);
     } elseif ($method === 'DELETE') {
       $result = $controller->$method_name($id);
+    } elseif ($method === 'GET' && $path === '/auth') {
+      $result = $controller->$method_name();
     } elseif ($method === 'GET' && $path !== '/') {
       $result = $controller->$method_name($id);
     } else {

@@ -1,3 +1,4 @@
+import { ButtonLogout } from '@/components/ButtonLogout'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Button, Checkbox, OutlinedInput } from '@mui/material'
 import axios from 'axios'
@@ -102,7 +103,6 @@ export default function TodoList() {
     })
 
     if (!todo) return
-    console.log(todos)
 
     try {
       await axios.put(`${import.meta.env.VITE_ENDPOINT}/${id}`, {
@@ -140,6 +140,7 @@ export default function TodoList() {
 
   return (
     <div className="container">
+      <ButtonLogout />
       <div className="mb-5 pt-5">
         <form onSubmit={handleSubmit(onSubmit)} className="relative mb-8">
           <div className="flex gap-x-5 justify-between">

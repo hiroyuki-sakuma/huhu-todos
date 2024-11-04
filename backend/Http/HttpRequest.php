@@ -18,6 +18,7 @@ class HttpRequest
         header("Access-Control-Allow-Origin: " . $_ENV['BASE_URL']);
         header('Access-Control-Max-Age: 3600');
         header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
+        header('Access-Control-Allow-Credentials: true');
         header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
     }
 
@@ -25,7 +26,6 @@ class HttpRequest
     {
         if ($this->method === 'POST' || $this->method === 'PUT') {
             $json = file_get_contents('php://input');
-            var_dump($json);
             $data = json_decode($json, true);
             return $data ?? [];
         }
