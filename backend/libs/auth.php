@@ -63,7 +63,7 @@ class Auth
     {
         if ($this->user) {
             $userModel = new UserModel($this->pdo);
-            $userModel->update_token($this->user['id'], '', '');
+            $userModel->update_token($this->user['id'], null, null);
         }
 
         $cookie_options = array_merge(

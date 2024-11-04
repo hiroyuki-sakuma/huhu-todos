@@ -14,6 +14,7 @@ export function ButtonLogout() {
           withCredentials: true,
         },
       )
+      console.log(response)
 
       if (response.data.status === 'success') {
         navigate('/login')

@@ -40,16 +40,16 @@ class UserModel
         }
     }
 
-    public function update_token(int $id, string $token, string $expires_limit)
+    public function update_token(int $id, ?string $token, ?int $expires_limit)
     {
         try {
             $sql = 'UPDATE users SET remember_token = :remember_token, token_expires_at = :token_expires_at WHERE id = :id';
             $stmt = $this->pdo->prepare($sql);
 
-            $expires_date = date('Y-m-d H:i:s', $expires_limit);
+            $expires_date = ($expires_limit ? date('Y-m-d H:i:s', $expires_limit) : null);
             $stmt->bindValue(':id', $id, PDO::PARAM_INT);
             $stmt->bindValue(':remember_token', $token, PDO::PARAM_STR);
-            $stmt->bindValue(':token_expires_at', $expires_date, PDO::PARAM_STR);
+            $stmt->bindValue(':token_expires_at', $expires_date, $expires_limit ? PDO::PARAM_STR : PDO::PARAM_NULL);
             $stmt->execute();
         } catch (Exception $e) {
             throw new Exception('認証トークンの上書きに失敗しました: ' . $e->getMessage());
