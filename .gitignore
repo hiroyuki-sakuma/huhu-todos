@@ -6,6 +6,7 @@ backend/vendor
 
 # production
 /dist
+tsconfig.app.tsbuildinfo
 
 # misc
 .DS_Store
