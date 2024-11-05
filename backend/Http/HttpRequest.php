@@ -17,7 +17,7 @@ class HttpRequest
         $this->path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) ?? '/';
 
         header('Content-Type: application/json; charset=utf-8');
-        header("Access-Control-Allow-Origin: " . $_ENV['BASE_URL']);
+        header("Access-Control-Allow-Origin: " . $_ENV['FRONTEND_URL']);
         header('Access-Control-Max-Age: 3600');
         header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
         header('Access-Control-Allow-Credentials: true');

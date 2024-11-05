@@ -13,7 +13,9 @@ class CreateUsersTable extends Migration
             password VARCHAR(255) NOT NULL,
             role ENUM('admin', 'user') NOT NULL DEFAULT 'user',
             remember_token VARCHAR(100) DEFAULT NULL,
-            token_expires_at DATE DEFAULT NULL
+            remember_token_expires_at DATE DEFAULT NULL,
+            reset_token VARCHAR(100) DEFAULT NULL,
+            reset_token_expires_at DATE DEFAULT NULL
         )";
 
         $stmt = $this->pdo->prepare($sql);

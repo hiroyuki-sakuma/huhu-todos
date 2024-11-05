@@ -2,7 +2,7 @@ import { useAuth } from '@/contexts/AuthContext'
 import { apiWithoutCSRF } from '@/lib/axios'
 import { Button, TextField } from '@mui/material'
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 type LoginData = {
   email: string
@@ -47,35 +47,40 @@ export default function Login() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="container pt-5">
-      <h1 className="text-lg mb-3">ログイン</h1>
-      {error && <div className="text-red-500 mb-4">{error}</div>}
-      <TextField
-        variant="outlined"
-        margin="dense"
-        fullWidth
-        label="メールアドレス"
-        name="email"
-        value={loginData.email}
-        onChange={handleChange}
-        required
-      />
-      <TextField
-        variant="outlined"
-        margin="normal"
-        fullWidth
-        label="パスワード"
-        // type="password"
-        name="password"
-        value={loginData.password}
-        onChange={handleChange}
-        required
-      />
-      <div className="mt-5">
-        <Button variant="contained" color="primary" fullWidth type="submit">
-          ログイン
-        </Button>
-      </div>
-    </form>
+    <div className="container pt-5">
+      <form onSubmit={handleSubmit}>
+        <h1 className="text-lg mb-3">ログイン</h1>
+        {error && <div className="text-red-500 mb-4">{error}</div>}
+        <TextField
+          variant="outlined"
+          margin="dense"
+          fullWidth
+          label="メールアドレス"
+          name="email"
+          value={loginData.email}
+          onChange={handleChange}
+          required
+        />
+        <TextField
+          variant="outlined"
+          margin="normal"
+          fullWidth
+          label="パスワード"
+          // type="password"
+          name="password"
+          value={loginData.password}
+          onChange={handleChange}
+          required
+        />
+        <div className="mt-5">
+          <Button variant="contained" color="primary" fullWidth type="submit">
+            ログイン
+          </Button>
+        </div>
+      </form>
+      <Link to="/password-reset-form" className="block mt-4 text-right">
+        パスワードを忘れた場合
+      </Link>
+    </div>
   )
 }

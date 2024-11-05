@@ -1,4 +1,4 @@
-import { ButtonLogout } from '@/components/ButtonLogout'
+import { DotsMenu } from '@/components/DotsMenu'
 import { apiWithCSRF, apiWithoutCSRF } from '@/lib/axios'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Button, Checkbox, OutlinedInput } from '@mui/material'
@@ -28,7 +28,6 @@ export default function TodoList() {
   const fetchTodos = useCallback(async () => {
     try {
       const response = await apiWithoutCSRF.get('/')
-      console.log(response)
       const uncompletedTodos = response.data.filter((item: Todo) => {
         return !item.completed
       })
@@ -137,8 +136,8 @@ export default function TodoList() {
 
   return (
     <div className="container">
-      <ButtonLogout />
-      <div className="mb-5 pt-5">
+      <DotsMenu />
+      <div className="mb-5">
         <form onSubmit={handleSubmit(onSubmit)} className="relative mb-8">
           <div className="flex gap-x-5 justify-between">
             <OutlinedInput

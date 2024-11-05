@@ -43,16 +43,46 @@ class UserModel
     public function update_token(int $id, ?string $token, ?int $expires_limit)
     {
         try {
-            $sql = 'UPDATE users SET remember_token = :remember_token, token_expires_at = :token_expires_at WHERE id = :id';
+            $sql = 'UPDATE users SET remember_token = :remember_token, remember_token_expires_at = :remember_token_expires_at WHERE id = :id';
             $stmt = $this->pdo->prepare($sql);
 
             $expires_date = ($expires_limit ? date('Y-m-d H:i:s', $expires_limit) : null);
             $stmt->bindValue(':id', $id, PDO::PARAM_INT);
             $stmt->bindValue(':remember_token', $token, PDO::PARAM_STR);
-            $stmt->bindValue(':token_expires_at', $expires_date, $expires_limit ? PDO::PARAM_STR : PDO::PARAM_NULL);
+            $stmt->bindValue(':remember_token_expires_at', $expires_date, $expires_limit ? PDO::PARAM_STR : PDO::PARAM_NULL);
             $stmt->execute();
         } catch (Exception $e) {
             throw new Exception('認証トークンの上書きに失敗しました: ' . $e->getMessage());
         }
+    }
+
+    public function save_reset_token(int $id, string $expiry, string $reset_token)
+    {
+        try {
+            $sql = 'UPDATE users SET reset_token = :reset_token, reset_token_expires_at = :reset_token_expires_at WHERE id = :id';
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindValue(':id', intval($id), PDO::PARAM_INT);
+            $stmt->bindValue(':reset_token', $reset_token, PDO::PARAM_STR);
+            $stmt->bindValue(':reset_token_expires_at', $expiry, PDO::PARAM_STR);
+            $stmt->execute();
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
+
+    public function password_reset(array $data)
+    {
+        // try {
+        //     $sql = 'UPDATE users SET remember_token = :remember_token, remember_token_expires_at = :remember_token_expires_at WHERE id = :id';
+        //     $stmt = $this->pdo->prepare($sql);
+
+        //     $expires_date = ($expires_limit ? date('Y-m-d H:i:s', $expires_limit) : null);
+        //     $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        //     $stmt->bindValue(':remember_token', $token, PDO::PARAM_STR);
+        //     $stmt->bindValue(':remember_token_expires_at', $expires_date, $expires_limit ? PDO::PARAM_STR : PDO::PARAM_NULL);
+        //     $stmt->execute();
+        // } catch (Exception $e) {
+        //     throw new Exception('パスワードのリセットに失敗しました: ' . $e->getMessage());
+        // }
     }
 }

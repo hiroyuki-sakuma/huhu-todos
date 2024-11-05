@@ -15,8 +15,8 @@ class UserSeeder extends Seeder
         $faker = Factory::create('ja_JP');
 
         $sql = '
-            INSERT INTO users (email, name, password, role, remember_token, token_expires_at)
-            VALUES (?, ?, ?, ?, ?, ?)
+            INSERT INTO users (email, name, password, role, remember_token, remember_token_expires_at, reset_token, reset_token_expires_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         ';
 
         $stmt = $this->pdo->prepare($sql);
@@ -26,6 +26,8 @@ class UserSeeder extends Seeder
             password_hash($_ENV['DEFAULT_PASSWORD'], PASSWORD_DEFAULT),
             'admin',
             null,
+            null,
+            null,
             null
         ]);
         $stmt->execute([
@@ -33,6 +35,8 @@ class UserSeeder extends Seeder
             'セカンドユーザー',
             password_hash($_ENV['DEFAULT_PASSWORD'], PASSWORD_DEFAULT),
             'user',
+            null,
+            null,
             null,
             null
         ]);

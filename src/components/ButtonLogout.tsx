@@ -1,19 +1,12 @@
 import { useAuth } from '@/contexts/AuthContext'
-import { Button } from '@mui/material'
-import axios from 'axios'
+import { apiWithCSRF } from '@/lib/axios'
 
 export function ButtonLogout() {
   const { logout } = useAuth()
 
   const handleLogout = async () => {
     try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_ENDPOINT}/logout`,
-        {},
-        {
-          withCredentials: true,
-        },
-      )
+      const response = await apiWithCSRF.post('/logout')
 
       if (response.data.status === 'success') {
         logout()
@@ -25,7 +18,9 @@ export function ButtonLogout() {
 
   return (
     <div className="flex justify-end pt-2">
-      <Button onClick={handleLogout}>ログアウト</Button>
+      <button type="button" onClick={handleLogout}>
+        ログアウト
+      </button>
     </div>
   )
 }

@@ -10,7 +10,7 @@ class HttpResponse
     {
         http_response_code($status_code);
         header('Content-Type: application/json; charset=utf-8');
-        header("Access-Control-Allow-Origin: " . $_ENV['BASE_URL']);
+        header("Access-Control-Allow-Origin: " . $_ENV['FRONTEND_URL']);
         header('Access-Control-Max-Age: 3600');
         header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
         header('Access-Control-Allow-Credentials: true');

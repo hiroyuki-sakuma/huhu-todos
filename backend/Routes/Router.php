@@ -45,10 +45,8 @@ class Router
       $result = $controller->$method_name($body);
     } elseif ($method === 'DELETE') {
       $result = $controller->$method_name($id);
-    } elseif ($method === 'GET' && $path === '/auth') {
+    } elseif ($method === 'GET') {
       $result = $controller->$method_name();
-    } elseif ($method === 'GET' && $path !== '/') {
-      $result = $controller->$method_name($id);
     } else {
       $result = $controller->$method_name();
     }
