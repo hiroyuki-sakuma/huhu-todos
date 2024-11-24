@@ -11,7 +11,7 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>
 
-export default function PasswordReset() {
+export default function ForgotPassword() {
   const {
     register,
     handleSubmit,
@@ -23,7 +23,7 @@ export default function PasswordReset() {
 
   const onSubmit: SubmitHandler<FormData> = async (data) => {
     try {
-      const response = await apiWithCSRF.post('/password-reset-form', {
+      const response = await apiWithCSRF.post('/forgot-password', {
         email: data.email,
       })
       console.log(response)

@@ -40,6 +40,19 @@ class UserModel
         }
     }
 
+    public function find_by_reset_token(string $token)
+    {
+        try {
+            $sql = 'SELECT * FROM users WHERE reset_token = :reset_token';
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindValue(':reset_token', $token, PDO::PARAM_STR);
+            $stmt->execute();
+            return $stmt->fetch();
+        } catch (Exception $e) {
+            throw new Exception('リセットトークンの検証に失敗しました: ' . $e->getMessage());
+        }
+    }
+
     public function update_token(int $id, ?string $token, ?int $expires_limit)
     {
         try {
@@ -70,19 +83,21 @@ class UserModel
         }
     }
 
-    public function password_reset(array $data)
+    public function update_password(int $id, string $password)
     {
-        // try {
-        //     $sql = 'UPDATE users SET remember_token = :remember_token, remember_token_expires_at = :remember_token_expires_at WHERE id = :id';
-        //     $stmt = $this->pdo->prepare($sql);
+        try {
+            $sql = 'UPDATE users SET
+                    password = :password,
+                    reset_token = NULL,
+                    reset_token_expires_at = NULL
+                    WHERE id = :id';
 
-        //     $expires_date = ($expires_limit ? date('Y-m-d H:i:s', $expires_limit) : null);
-        //     $stmt->bindValue(':id', $id, PDO::PARAM_INT);
-        //     $stmt->bindValue(':remember_token', $token, PDO::PARAM_STR);
-        //     $stmt->bindValue(':remember_token_expires_at', $expires_date, $expires_limit ? PDO::PARAM_STR : PDO::PARAM_NULL);
-        //     $stmt->execute();
-        // } catch (Exception $e) {
-        //     throw new Exception('パスワードのリセットに失敗しました: ' . $e->getMessage());
-        // }
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindValue(':id', $id, PDO::PARAM_STR);
+            $stmt->bindValue(':password', password_hash($password, PASSWORD_DEFAULT), PDO::PARAM_STR);
+            $stmt->execute();
+        } catch (Exception $e) {
+            throw new Exception('パスワードの更新に失敗しました: ' . $e->getMessage());
+        }
     }
 }

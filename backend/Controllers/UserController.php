@@ -26,24 +26,22 @@ class UserController
             $data = $this->user_model->find_by_token($token);
             HttpResponse::send_json_response($data, 200);
         } catch (Exception $e) {
-            $data = [
+            HttpResponse::send_json_response([
                 'status' => 'error',
                 'message' => 'ユーザー取得に失敗しました'
-            ];
-            HttpResponse::send_json_response($data, 400);
+            ], 400);
         }
     }
 
-    public function reset_password_email(array $data)
+    public function email_reset_password_link(array $data)
     {
         try {
             $user = $this->user_model->find_by_email($data['email']);
             if (!$user) {
-                $data = [
+                HttpResponse::send_json_response([
                     'status' => 'email not found',
                     'message' => 'メールアドレスが見つかりません'
-                ];
-                HttpResponse::send_json_response($data, 400);
+                ], 400);
             }
 
             $reset_token = bin2hex(random_bytes(32));
@@ -80,11 +78,60 @@ class UserController
                 'message' => 'リセットメールを送信しました'
             ]);
         } catch (Exception $e) {
-            $data = [
+            HttpResponse::send_json_response([
                 'status' => 'error',
                 'message' => 'パスワードリセットのためのメール送信に失敗しました'
-            ];
-            HttpResponse::send_json_response($data, 500);
+            ], 500);
+        }
+    }
+
+    public function verify_reset_token()
+    {
+        try {
+            $user = $this->user_model->find_by_reset_token($_GET['token']);
+
+            if (!$user) {
+                return HttpResponse::send_json_response([
+                    'status' => 'error',
+                    'message' => '無効なリセットリンクです。',
+                ], 400);
+            }
+
+            if (strtotime($user['reset_token_expires_at']) < time()) {
+                return HttpResponse::send_json_response([
+                    'status' => 'error',
+                    'message' => 'リセットリンクの有効期限が切れています。',
+                ], 400);
+            }
+
+            return HttpResponse::send_json_response([
+                'status' => 'success',
+                'message' => '有効なリセットリンクです。',
+                'email' => $user['email']
+            ], 200);
+        } catch (Exception $e) {
+            return HttpResponse::send_json_response([
+                'status' => 'error',
+                'message' => 'トークンの検証に失敗しました。',
+            ], 500);
+        }
+    }
+
+    public function update_password(array $data)
+    {
+        try {
+            $user = $this->user_model->find_by_reset_token($data['token']);
+            $this->user_model->update_password($user['id'], $data['new_password']);
+
+            return HttpResponse::send_json_response([
+                'status' => 'success',
+                'message' => 'パスワードの更新に成功しました。'
+            ], 200);
+        } catch (Exception) {
+            return HttpResponse::send_json_response([
+                'status' => 'error',
+                'message' => 'パスワードの更新に失敗しました。',
+            ], 500);
         }
     }
 }

@@ -65,7 +65,6 @@ class TodoModel
             $stmt->bindValue(':completed', $data['completed'], PDO::PARAM_BOOL);
             if ($data['completed_at']) {
                 $date = new DateTime($data['completed_at']);
-                var_dump($date);
                 $completed_at = $date->format('Y-m-d');
             }
             $stmt->bindValue(':completed_at', $completed_at, $completed_at ? PDO::PARAM_STR : PDO::PARAM_NULL);

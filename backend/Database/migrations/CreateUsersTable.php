@@ -15,7 +15,7 @@ class CreateUsersTable extends Migration
             remember_token VARCHAR(100) DEFAULT NULL,
             remember_token_expires_at DATE DEFAULT NULL,
             reset_token VARCHAR(100) DEFAULT NULL,
-            reset_token_expires_at DATE DEFAULT NULL
+            reset_token_expires_at DATETIME DEFAULT NULL
         )";
 
         $stmt = $this->pdo->prepare($sql);

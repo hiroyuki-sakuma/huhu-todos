@@ -66,19 +66,19 @@ export default function Login() {
           margin="normal"
           fullWidth
           label="パスワード"
-          // type="password"
+          type="password"
           name="password"
           value={loginData.password}
           onChange={handleChange}
           required
         />
-        <div className="mt-5">
+        <div className="mt-10">
           <Button variant="contained" color="primary" fullWidth type="submit">
             ログイン
           </Button>
         </div>
       </form>
-      <Link to="/password-reset-form" className="block mt-4 text-right">
+      <Link to="/forgot-password" className="block mt-4 text-right">
         パスワードを忘れた場合
       </Link>
     </div>

@@ -9,15 +9,16 @@ use Backend\Controllers\UserController;
 return [
     'GET' => [
         '/' => [TodoController::class, 'index'],
-        // '/{id}' => [TodoController::class, 'get_by_id'],
         '/auth' => [AuthController::class, 'check_auth'],
-        '/user' => [UserController::class, 'get_user_by_token']
+        '/user' => [UserController::class, 'get_user_by_token'],
+        '/password-reset' => [UserController::class, 'verify_reset_token']
     ],
     'POST' => [
         '/' => [TodoController::class, 'store'],
         '/login' => [AuthController::class, 'login'],
         '/logout' => [AuthController::class, 'logout'],
-        '/password-reset-form' => [UserController::class, 'reset_password_email'],
+        '/forgot-password' => [UserController::class, 'email_reset_password_link'],
+        '/password-reset' => [UserController::class, 'update_password']
     ],
     'PUT' => [
         '/{id}' => [TodoController::class, 'update']
